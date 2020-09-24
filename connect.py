@@ -1,17 +1,17 @@
 '''
-    fltplango_connect.py
+    connect.py
 
     Establishes a connection from FS2020 to the FltPlan Go app.
 '''
 import socket
 import logging
+import sys
 from time import sleep
 from math import degrees
 
 from SimConnect import *
 from SimConnect.Enum import *
 
-#FLTPLAN_IP = "10.244.108.216"
 XPLANE_PORT = 49002
 
 print("")
@@ -27,12 +27,11 @@ logging.basicConfig(level=logging.DEBUG)
 LOGGER = logging.getLogger(__name__)
 LOGGER.info("START")
 
-# creat simconnection and pass used user classes
+# connect to MSFS
 sm = SimConnect()
 aq = AircraftRequests(sm)
-#ae = AircraftEvents(sm)
 
-# Make the UDP socket
+# Make the UDP socket to communicate with FltPlan Go
 fpgSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 def sendToFltplan(msg):
