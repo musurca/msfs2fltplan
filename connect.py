@@ -15,7 +15,7 @@ from SimConnect.Enum import *
 XPLANE_PORT = 49002
 
 print("")
-print("--- FS2020 -> FltPlan Go ---")
+print("--- MSFS 2020 -> FltPlan Go ---")
 
 if len(sys.argv) == 1:
     sys.exit("Must specify the IP address of the FltPlan Go app!")

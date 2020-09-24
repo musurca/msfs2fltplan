@@ -1,12 +1,17 @@
 # msfs2fltplango
- Connects MSFS 2020 to the mobile FltPlan Go app
+ Connects Microsoft Flight Simulator 2020 (MSFS 2020) to the mobile FltPlan Go app. This tool allows you to specify the IP address of your mobile device running FltPlan Go, and is primarily for users is for users who cannot run MSFS and FltPlan Go on the same local network.
 
-## Usage
+## Install
+1) Install the latest version of [Python 3](https://www.python.org/downloads/).
+2) From a command-line, run `pip install SimConnect`.
+3) Download [this respository](https://github.com/musurca/msfs2fltplango/archive/master.zip) and unzip to a directory of your choice.
+
+## How to Use
 1) Run Microsoft Flight Simulator.
 2) Run `connect [ip_address]` using the IP address of your mobile device running FltPlan Go.
-3) In FltPlan Go, go to the External menu and select "X-Plane" from the Simulators category. After a few seconds, the Status should go green and read "Connected."
-4) Done! If you don't see your plane on the map, make sure you've turned on "Enable Ship Position" in the FltPlan Go settings.
+3) In FltPlan Go, go to the External menu and select "X-Plane" from the Simulators category. After a few seconds, the Status should turn green and read "Connected."
+4) Done! (If you don't see your plane on the map, make sure you've turned on "Enable Ship Position" in the FltPlan Go settings.)
 
 ## Dependencies
-* Python 3
-* python-simconnect
+* [Python 3](https://www.python.org/downloads/)
+* [python-simconnect](https://github.com/odwdinc/Python-SimConnect)
