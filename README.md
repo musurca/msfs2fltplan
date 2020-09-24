@@ -8,7 +8,10 @@
 
 ## How to Use
 1) Run Microsoft Flight Simulator.
-2) Run `connect [ip_address]` using the IP address of your mobile device running FltPlan Go.
+2) Run `connect [ip_address]` using the IP address of your mobile device running FltPlan Go. For example:
+```
+connect 10.20.223.11
+```
 3) In FltPlan Go, go to the External menu and select "X-Plane" from the Simulators category. After a few seconds, the Status should turn green and read "Connected."
 4) Done! (If you don't see your plane on the map, make sure you've turned on "Enable Ship Position" in the FltPlan Go settings.)
 
