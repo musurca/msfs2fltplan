@@ -48,64 +48,16 @@ def sendToFltplan(msg):
 def numFormat(num):
     return str(round(num,5))
 
-def getSimvar(key):
-    try:
-        val = aq.PositionandSpeedData.get(key)
-    except:
-        return -999999 # NaN, essentially
-
-    return val
-
-def outsideRange(val, small, big):
-    return (val < small) or (val > big)
-
-oldLat = 0
-oldLon = 0
-oldAlt = 0
-oldHdg = 0
-oldSpd = 0
-oldPitch = 0
-oldBank = 0
-
 while not sm.quit:
     # Get crucial simvars via SimConnect
-    lat = getSimvar('PLANE_LATITUDE')
-    lon = getSimvar('PLANE_LONGITUDE')
-    alt = getSimvar('PLANE_ALTITUDE')
-    hdg = getSimvar('PLANE_HEADING_DEGREES_TRUE')
-    spd = getSimvar('GROUND_VELOCITY')
-    pitch = getSimvar('PLANE_PITCH_DEGREES')
-    bank = getSimvar('PLANE_BANK_DEGREES')
-
-    # SimConnect often gives junk values -- ignore them if detected
-    if outsideRange(lat, -90, 90):
-        lat = oldLat
-    oldLat = lat
-
-    if outsideRange(lon, -180, 180):
-        lon = oldLon
-    oldLon = lon
-
-    if outsideRange(alt, -1360, 99999):
-        alt = oldAlt
-    oldAlt = alt
-
-    if outsideRange(hdg, -6.283185, 6.283185):
-        hdg = oldHdg
-    oldHdg = hdg
-
-    if outsideRange(spd, 0, 800):
-        spd = oldSpd
-    oldSpd = spd
-
-    if outsideRange(pitch, -6.283185, 6.283185):
-        pitch = oldPitch
-    oldPitch = pitch
-
-    if outsideRange(bank, -6.283185, 6.283185):
-        bank = oldBank
-    oldBank = bank
-
+    lat = aq.get('PLANE_LATITUDE')
+    lon = aq.get('PLANE_LONGITUDE')
+    alt = aq.get('PLANE_ALTITUDE')
+    hdg = aq.get('PLANE_HEADING_DEGREES_TRUE')
+    spd = aq.get('GROUND_VELOCITY')
+    pitch = aq.get('PLANE_PITCH_DEGREES')
+    bank = aq.get('PLANE_BANK_DEGREES')
+   
     # Perform unit conversions to X-Plane standard
     alt = alt * 0.3048      # feet -> meters
     hdg = degrees(hdg)      # radians -> degrees
