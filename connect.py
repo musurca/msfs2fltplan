@@ -50,7 +50,7 @@ def numFormat(num):
 
 def getSimvar(key):
     try:
-        val = aq.PositionandSpeedData.get(key)
+        val = aq.get(key)
     except:
         return -999999 # NaN, essentially
 
