@@ -6,22 +6,29 @@
 import socket
 import logging
 import sys
-from time import sleep
+import threading
 from math import *
 
 from SimConnect import *
 from SimConnect.Enum import *
 
 XPLANE_PORT = 49002
+REFRESH_TIME = 0.5
+
+RUNNING = True
 
 print("")
 print("--- MSFS 2020 -> FltPlan Go ---")
 
-if len(sys.argv) == 1:
+receivers = []
+numIPs = len(sys.argv)-1
+if numIPs == 0:
     sys.exit("Must specify the IP address of the FltPlan Go app!")
 else:
-    ipAddr = sys.argv[1]
-    FLTPLAN_ADDR = (ipAddr, XPLANE_PORT)
+    for i in range(numIPs):
+        addr = sys.argv[i+1]
+        receivers.append((addr, XPLANE_PORT))
+        print("Connecting to " + addr + "...")
 
 logging.basicConfig(level=logging.DEBUG)
 LOGGER = logging.getLogger(__name__)
@@ -29,45 +36,75 @@ LOGGER.info("START")
 
 # connect to MSFS
 sm = SimConnect()
-aq = AircraftRequests(sm)
+aq = AircraftRequests(sm, _time=0)
+
+def fatalError(msg):
+    print(msg)
+    RUNNING = False
+    sm.exit()
 
 # Create the UDP socket to communicate with FltPlan Go
 try:
     fpgSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 except socket.error as msg:
-    print(msg)
-    sys.exit()
+    fatalError(msg)
 
 def sendToFltplan(msg):
-    try:
-        fpgSock.sendto(bytes(msg,'utf-8'), FLTPLAN_ADDR)
-    except socket.error as msg:
-        print(msg)
-        sys.exit()
+    packet = bytes(msg,'utf-8')
+    for dest in receivers:
+        try:
+            fpgSock.sendto(packet, dest)
+        except socket.error as msg:
+            fatalError(msg)
 
 def numFormat(num):
     return str(round(num,5))
 
-def getSimvar(key):
-    try:
-        val = aq.get(key)
-    except:
-        return -999999 # NaN, essentially
-
-    return val
-
 def outsideRange(val, small, big):
     return (val < small) or (val > big)
 
-oldLat = 0
-oldLon = 0
-oldAlt = 0
-oldHdg = 0
-oldSpd = 0
-oldPitch = 0
-oldBank = 0
+# Key, minimum range, maximum range
+simVarKeys = [
+    ['PLANE_LATITUDE',-90,90],
+    ['PLANE_LONGITUDE',-180,180],
+    ['PLANE_ALTITUDE',-1360, 99999],
+    ['PLANE_HEADING_DEGREES_TRUE',-6.283185,6.283185],
+    ['GROUND_VELOCITY',0,800],
+    ['PLANE_PITCH_DEGREES',-6.283185,6.283185],
+    ['PLANE_BANK_DEGREES',-6.283185,6.283185] ]
 
-while not sm.quit:
+simvars = {}
+for k in simVarKeys:
+    key, minRange, maxRange = k[0],k[1],k[2]
+    sv = aq.find(key)
+    if sv != None:
+        sv.cachedVal = 0
+        sv.minRange = minRange
+        sv.maxRange = maxRange
+        simvars[key] = sv
+    else:
+        fatalError("Can't access sim variable: " + key)
+
+def getSimvar(key):
+    sv = simvars[key]
+    try:
+        val = sv.value
+    except:
+        fatalError("Can't refresh sim variable: " + key)
+    if outsideRange(val, sv.minRange, sv.maxRange):
+        # if failed to update, use previously cached value
+        val = sv.cachedVal
+    sv.cachedVal = val
+    return val
+
+def queueTimer(t):
+    if RUNNING and not sm.quit:
+        vT = threading.Timer(t, refreshVars)
+        vT.start()
+        return vT
+    return None
+
+def refreshVars():
     # Get crucial simvars via SimConnect
     lat = getSimvar('PLANE_LATITUDE')
     lon = getSimvar('PLANE_LONGITUDE')
@@ -76,35 +113,6 @@ while not sm.quit:
     spd = getSimvar('GROUND_VELOCITY')
     pitch = getSimvar('PLANE_PITCH_DEGREES')
     bank = getSimvar('PLANE_BANK_DEGREES')
-
-    # SimConnect often gives junk values -- ignore them if detected
-    if outsideRange(lat, -90, 90):
-        lat = oldLat
-    oldLat = lat
-
-    if outsideRange(lon, -180, 180):
-        lon = oldLon
-    oldLon = lon
-
-    if outsideRange(alt, -1360, 99999):
-        alt = oldAlt
-    oldAlt = alt
-
-    if outsideRange(hdg, -6.283185, 6.283185):
-        hdg = oldHdg
-    oldHdg = hdg
-
-    if outsideRange(spd, 0, 800):
-        spd = oldSpd
-    oldSpd = spd
-
-    if outsideRange(pitch, -6.283185, 6.283185):
-        pitch = oldPitch
-    oldPitch = pitch
-
-    if outsideRange(bank, -6.283185, 6.283185):
-        bank = oldBank
-    oldBank = bank
 
     # Perform unit conversions to X-Plane standard
     alt = alt * 0.3048      # feet -> meters
@@ -122,6 +130,12 @@ while not sm.quit:
     sendToFltplan(gpsMsg)
     sendToFltplan(attMsg)
 
-    sleep(0.5)
+    # Continue to refresh if still running
+    if queueTimer(REFRESH_TIME) == None:
+        sm.exit()
 
-sm.exit()
+# Start refreshing on a thread
+queueTimer(REFRESH_TIME)
+if RUNNING:
+    input("Press Return to stop.")
+RUNNING = False
