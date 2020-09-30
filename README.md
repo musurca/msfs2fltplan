@@ -3,8 +3,7 @@
 
 ## Install
 1) Install the 64-bit version of [Python 3](https://www.python.org/ftp/python/3.8.6/python-3.8.6-amd64.exe). (Make sure you check the option to add Python to your PATH.)
-2) From a command-line, run `pip install SimConnect`.
-3) Download [this repository](https://github.com/musurca/msfs2fltplango/archive/master.zip) and unzip to a directory of your choice, e.g. `C:\fltplan`
+2) Download [this repository](https://github.com/musurca/msfs2fltplango/archive/master.zip) and unzip to a directory of your choice, e.g. `C:\fltplan`
 
 ## How to Use
 1) Run Microsoft Flight Simulator.
