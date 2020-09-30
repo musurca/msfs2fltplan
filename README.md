@@ -23,5 +23,5 @@ connect 10.20.223.11 240.10.113.34 192.168.0.52
 
 ## Dependencies
 * [Python 3](https://www.python.org/downloads/)
-* [python-simconnect](https://github.com/odwdinc/Python-SimConnect)
+* [Python-SimConnect](https://github.com/odwdinc/Python-SimConnect)
 * FltPlan Go ([iOS](https://apps.apple.com/us/app/fltplan-go/id694832363) / [Android](https://play.google.com/store/apps/details?id=com.fltplan.go&hl=en_US))
