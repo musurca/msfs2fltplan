@@ -85,12 +85,12 @@ def refreshVars():
     if shouldUpdatePos == 0:
         lat = getSimvar('PLANE_LATITUDE')
         lon = getSimvar('PLANE_LONGITUDE')
-        alt = getSimvar('PLANE_ALTITUDE') * 0.3048  # ft ASL -> MSL
-        spd = getSimvar('GROUND_VELOCITY') / 1.945  # knots -> m/s
+        alt = getSimvar('PLANE_ALTITUDE') * 0.3048          # ft ASL -> MSL
 
     hdg = degrees( getSimvar('PLANE_HEADING_DEGREES_TRUE') )
-    pitch = degrees( getSimvar('PLANE_PITCH_DEGREES') )
-    bank = degrees( getSimvar('PLANE_BANK_DEGREES') )
+    pitch = -degrees( getSimvar('PLANE_PITCH_DEGREES') )    # X-Plane flips the sign
+    bank = -degrees( getSimvar('PLANE_BANK_DEGREES') )      
+    spd = getSimvar('GROUND_VELOCITY') / 1.945              # knots -> m/s
 
     # Send pseudo-NMEA sentences masquerading as X-Plane.
     # X-Plane uses a modified version of the ForeFlight protocol: 
@@ -103,7 +103,7 @@ def refreshVars():
 
     #b'XATT1,122.3,-6.1,0.3,-0.0014,0.0629,-0.0003,-0.0,0.1,-0.0,-0.02,1.86,0.21'
     # XATT messages sent at the current update rate (per protocol, anywhere from 4-10 Hz)
-    sendToFltplan( "XATT1," + numFormat(hdg,1) + "," + numFormat(pitch,2) + "," + numFormat(bank,2) + ",0,0,0,0,0,0,0,0,0" )
+    sendToFltplan( "XATT1," + numFormat(hdg,2) + "," + numFormat(pitch,2) + "," + numFormat(bank,2) + ",0,0,0," + numFormat(-spd,2)+","+numFormat(pitch,2)+",0,0,0,0" )
 
     shouldUpdatePos = ( shouldUpdatePos + 1 ) % UPDATE_RATE
 
