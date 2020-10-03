@@ -22,6 +22,18 @@ NOTE: You can also connect to more than one device running FltPlan Go by specify
 connect 10.20.223.11 240.10.113.34 192.168.0.52
 ```
 
+## Troubleshooting
+
+Make sure you’re using the right IP address for your network setup. There are a few possibilities here:
+
+* If the computer running MSFS and your mobile device are on the same local wifi network (the easiest way), you can just use the IP address reported by your mobile device.
+(iOS) Settings -> Wi-Fi -> (your network) -> IP Address
+(Android) Settings -> About -> Status -> IP Address
+
+* However, if they’re on different networks, things get a little more complicated. By far the easiest way to handle this situation is to use a free VPN service like [ZeroTier One](https://www.zerotier.com/) to connect your computer and your mobile device on a virtual local network. (There are clients for Windows, iOS, and Android.) When activated, the ZeroTier client will give your mobile device a static IP address that only works on that network, and that would be the IP you would plug into the script.
+
+* If your devices are on different networks and you can’t use a VPN like ZeroTier for whatever reason, you’ll need to configure the wifi router used by your mobile device to assign it a static IP on the network, and to forward incoming UDP packets on port 49002 directly to that IP. However, that will NOT be the IP you’ll plug into the script. Instead you’ll want to use the external IP address, which can be found by going to https://whatismyipaddress.com/ on your mobile device.
+
 ## Dependencies
 * [Python 3](https://www.python.org/downloads/)
 * [Python-SimConnect](https://github.com/odwdinc/Python-SimConnect)
