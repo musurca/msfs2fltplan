@@ -1,10 +1,10 @@
 # msfs2fltplan
  Connects Microsoft Flight Simulator 2020 (MSFS 2020) to the mobile [FltPlan Go](https://www.fltplan.com/) app. This tool allows you to specify the IP address of your mobile device running FltPlan Go, and is primarily for users who cannot run MSFS and FltPlan Go on the same local network, or are having trouble using the official FltPlan Go FSX plugin.
 
- (This tool should also connect you to [ForeFlight](https://foreflight.com/itunes) as well, although that use is unsupported.)
+ (This tool should also connect you to [ForeFlight](https://foreflight.com/itunes) or [iFly GPS](https://www.iflygps.com) as well, although those are unsupported.)
 
 ## Install
-1) Install the 64-bit version of [Python 3](https://www.python.org/ftp/python/3.8.6/python-3.8.6-amd64.exe). (Make sure you check the option to add Python to your PATH.)
+1) Install the 64-bit version of [Python 3](https://www.python.org/ftp/python/3.8.7/python-3.8.7-amd64.exe). (Make sure you check the option to add Python to your PATH.)
 2) Download [the latest release of this tool](https://github.com/musurca/msfs2fltplan/releases/download/v1.1/msfs2fltplan_v1.1.zip) and unzip to a directory of your choice, e.g. `C:\fltplan`
 
 ## How to Use
